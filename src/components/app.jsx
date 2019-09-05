@@ -37,13 +37,13 @@ function App() {
 
   }, []); // Pass empty array to only run once on mount
 
+  // Unused for now
   function massUpload() {
     // Open the modal
     $('#uploadModal').modal();
 
     const webClients = clients.filter(client => client.fields['Flourishing Index'] === 'Web');
     $('#counter').html(`<p><span id="finishedUploads">0</span> / ${webClients.length}</p>`);
-    uploadChallenge(webClients[0]);
 
     webClients.map(client => {
       uploadChallenge(client);
@@ -51,6 +51,10 @@ function App() {
   }
 
   function uploadChallenge(client) {
+    // Open the modal
+    $('#uploadModal').modal();
+    $('#uploadModal .modal-body').html('');
+
     const startDate = '2019-09-10';
     const endDate = '2019-10-11';
 
@@ -117,9 +121,9 @@ function App() {
         let count = Number($('#finishedUploads').html());
         $('#finishedUploads').html(count + 1);
 
-        $('#uploadModal .modal-body').append(`
+        $('#uploadModal .modal-body').html(`
           <div class="alert alert-success" role="alert">
-            <p>Uploaded Tile for <strong>EdwardElmhurst</strong></p>
+            <p>Uploaded Tile for <strong>${client.fields['Account Name']}</strong></p>
             <p class="mb-0"><strong>Challenge Id</strong></p>
             <p>${result.Data.ChallengeId}</p>
             <p class="mb-0"><strong>Survey link</strong></p>
@@ -169,16 +173,16 @@ function App() {
     <div id="app">
       <Header />
 
-      {/* <div className="form-group">
+      <div className="form-group">
         <label htmlFor="employerName">EmployerName</label>
         <select id="employerName" className="form-control custom-select" onChange={selectClient}>
           <option defaultValue>Select Employer</option>
           {renderEmployerNames()}
         </select>
-      </div> */}
+      </div>
 
       <div className="text-center">
-        <button type="button" className="btn btn-primary" id="uploadButton" onClick={massUpload}>Upload Aduro Index Tile</button>
+        <button type="button" className="btn btn-primary" id="uploadButton" onClick={() => uploadChallenge(selectedClient)}>Upload Aduro Index Tile</button>
         <img id="spinner" src="images/spinner.svg" />
       </div>
 
