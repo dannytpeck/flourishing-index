@@ -55,8 +55,8 @@ function App() {
     $('#uploadModal').modal();
     $('#uploadModal .modal-body').html('');
 
-    const startDate = '2019-09-10';
-    const endDate = '2019-10-11';
+    const startDate = '2020-01-16';
+    const endDate = '2020-03-31';
 
     const data = {
       'AboutChallenge': '',
@@ -79,12 +79,11 @@ function App() {
       'Frequency': 'None',
       'IsDeviceEnabled': false,
       'IsFeatured': null,
-      'IsSelfReportEnabled': false,
+      'IsSelfReportEnabled': true,
       'IsTeamChallenge': false,
       'Name': 'Find Your Flourishing Score',
-      'PartnerId': 1,
       'ShortDescription': 'ADURO believes that each person has the opportunity to unlock their potential by discovering that there are always opportunities to grow, no matter where you are today.',
-      'ShowExtendedDescription': true,
+      'ShowExtendedDescription': false,
       'ShowWeeklyCalendar': false,
       'StartDate': startDate,
       'TargetUrl': '#',
