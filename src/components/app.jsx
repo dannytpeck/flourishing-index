@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
+import _ from 'lodash';
 import Airtable from 'airtable';
 const base = new Airtable({ apiKey: 'keyCxnlep0bgotSrX' }).base('appHXXoVD1tn9QATh');
 
@@ -48,6 +49,10 @@ function App() {
     webClients.map(client => {
       uploadChallenge(client);
     });
+  }
+
+  function upload100Times(client) {
+    _.throttle(uploadChallenge(client), 500);
   }
 
   function uploadChallenge(client) {
