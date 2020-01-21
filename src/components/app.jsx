@@ -51,17 +51,24 @@ function App() {
     });
   }
 
-  function upload100Times(client) {
-    _.throttle(uploadChallenge(client), 500);
+  // Only leaving for example using lodash throttle, delete when finished with mass uploader
+  function upload300Times() {
+    for (let i = 0; i < 300; i++) {
+      //const throttledUpload = _.throttle(uploadChallenge, 500);
+      //throttledUpload();
+      uploadChallenge();
+    }
   }
 
-  function uploadChallenge(client) {
+  function uploadChallenge() {
+    const client = selectedClient;
+
     // Open the modal
     $('#uploadModal').modal();
     $('#uploadModal .modal-body').html('');
 
-    const startDate = '2020-01-16';
-    const endDate = '2020-03-31';
+    const startDate = '2020-01-21';
+    const endDate = '2020-01-22';
 
     const data = {
       'AboutChallenge': '',
@@ -71,7 +78,6 @@ function App() {
       },
       'ActivityType': 'complete the assessment',
       'AmountUnit': '',
-      'ButtonText': 'Complete Assessment',
       'ChallengeLogoThumbURL': 'https://d2qv7eqemtyl41.cloudfront.net/PDW/c7a3a87d-d7d2-4273-8c53-943f656c4d0d-large.jpg',
       'ChallengeLogoURL': 'https://d2qv7eqemtyl41.cloudfront.net/PDW/c7a3a87d-d7d2-4273-8c53-943f656c4d0d-large.jpg',
       'ChallengeTarget': 1,
@@ -91,7 +97,6 @@ function App() {
       'ShowExtendedDescription': false,
       'ShowWeeklyCalendar': false,
       'StartDate': startDate,
-      'TargetUrl': '#',
       'TeamSize': null
     };
 
@@ -112,8 +117,7 @@ function App() {
         type: 'PUT',
         dataType: 'json',
         data: JSON.stringify({
-          'AboutChallenge': `<p>Find Your Flourishing Score using the Flourishing Measure developed by The Human Flourishing Program at Harvard University The background and motivation for these items and the flourishing domains can be found in: VanderWeele, T.J. (2017). <a href="https://www.pnas.org/content/114/31/8148" target="_blank" rel="noopener">On the promotion of human flourishing</a>. Proceedings of the National Academy of Sciences, U.S.A., 31:8148-8156.</p><p>You can access your results any time after you have completed the full assessment by clicking <a href="${surveyUrl}" target="_blank" rel="noopener">here</a>.</p><p style="font-size: 0.7em;">&copy; Copyright 2019 <a style="text-decoration: none;" href="http://www.adurolife.com/" target="_blank" rel="noopener">ADURO, INC.</a> All rights reserved.</p>`,
-          'TargetUrl': surveyUrl
+          'AboutChallenge': `<p>Find Your Flourishing Score using the Flourishing Measure developed by The Human Flourishing Program at Harvard University The background and motivation for these items and the flourishing domains can be found in: VanderWeele, T.J. (2017). <a href="https://www.pnas.org/content/114/31/8148" target="_blank" rel="noopener">On the promotion of human flourishing</a>. Proceedings of the National Academy of Sciences, U.S.A., 31:8148-8156.</p><p>You can access your results any time after you have completed the full assessment by clicking <a href="${surveyUrl}" target="_blank" rel="noopener">here</a>.</p><p style="font-size: 0.7em;">&copy; Copyright 2020 <a style="text-decoration: none;" href="http://www.adurolife.com/" target="_blank" rel="noopener">ADURO, INC.</a> All rights reserved.</p>`
         }),
         headers: {
           Authorization: 'Bearer ' + client.fields['LimeadeAccessToken']
@@ -135,12 +139,16 @@ function App() {
           </div>
         `);
 
-      }).fail((xhr, textStatus, error) => {
-        console.error(xhr.responseText);
+      }).fail((request, status, error) => {
+        console.error(request.status);
+        console.error(request.responseText);
+        console.log('Update challenge failed for client', client.fields['Limeade e=']);
       });
 
-    }).fail((xhr, textStatus, error) => {
-      console.error(xhr.responseText);
+    }).fail((request, status, error) => {
+      console.error(request.status);
+      console.error(request.responseText);
+      console.log('Create challenge failed for client ' + client.fields['Limeade e=']);
     });
 
   }
@@ -186,7 +194,7 @@ function App() {
       </div>
 
       <div className="text-center">
-        <button type="button" className="btn btn-primary" id="uploadButton" onClick={() => uploadChallenge(selectedClient)}>Upload Aduro Index Tile</button>
+        <button type="button" className="btn btn-primary" id="uploadButton" onClick={uploadChallenge}>Upload Aduro Index Tile</button>
         <img id="spinner" src="images/spinner.svg" />
       </div>
 
