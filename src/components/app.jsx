@@ -67,8 +67,8 @@ function App() {
     $('#uploadModal').modal();
     $('#uploadModal .modal-body').html('');
 
-    const startDate = '2020-01-21';
-    const endDate = '2020-01-22';
+    const startDate = '2020-02-17';
+    const endDate = '2020-03-17';
 
     const data = {
       'AboutChallenge': '',
