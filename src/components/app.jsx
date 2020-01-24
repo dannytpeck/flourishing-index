@@ -194,7 +194,7 @@ function App() {
       </div>
 
       <div className="text-center">
-        <button type="button" className="btn btn-primary" id="uploadButton" onClick={uploadChallenge}>Upload Aduro Index Tile</button>
+        <button type="button" className="btn btn-primary" id="uploadButton" onClick={uploadChallenge}>Upload Flourishing Index Tile</button>
         <img id="spinner" src="images/spinner.svg" />
       </div>
 
