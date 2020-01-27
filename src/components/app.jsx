@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
-import _ from 'lodash';
 import Airtable from 'airtable';
 const base = new Airtable({ apiKey: 'keyCxnlep0bgotSrX' }).base('appHXXoVD1tn9QATh');
 
@@ -38,34 +37,23 @@ function App() {
 
   }, []); // Pass empty array to only run once on mount
 
-  // Unused for now
   function massUpload() {
     // Open the modal
     $('#uploadModal').modal();
 
-    const webClients = clients.filter(client => client.fields['Flourishing Index'] === 'Web');
-    $('#counter').html(`<p><span id="finishedUploads">0</span> / ${webClients.length}</p>`);
+    const flourishingClients = clients.filter(client => client.fields['Flourishing Index'] === 'Web');
 
-    webClients.map(client => {
+    $('#counter').html(`<p><span id="finishedUploads">0</span> / ${flourishingClients.length}</p>`);
+
+    flourishingClients.map(client => {
+      // console.log(client);
       uploadChallenge(client);
     });
   }
 
-  // Only leaving for example using lodash throttle, delete when finished with mass uploader
-  function upload300Times() {
-    for (let i = 0; i < 300; i++) {
-      //const throttledUpload = _.throttle(uploadChallenge, 500);
-      //throttledUpload();
-      uploadChallenge();
-    }
-  }
-
-  function uploadChallenge() {
-    const client = selectedClient;
-
+  function uploadChallenge(client) {
     // Open the modal
     $('#uploadModal').modal();
-    $('#uploadModal .modal-body').html('');
 
     const startDate = '2020-02-17';
     const endDate = '2020-03-17';
@@ -110,14 +98,14 @@ function App() {
       },
       contentType: 'application/json; charset=utf-8'
     }).done((result) => {
-      const surveyUrl = `/api/Redirect?url=https%3A%2F%2Fheartbeat.adurolife.com%2Fapp%2Fsurvey%2F%3Fs%3Dce0bf484-6159-46b1-a614-f038e88723ea%26q1%3D${result.Data.ChallengeId}%26q4%3D%5Bparticipantcode%5D%26q5%3D%5Be%5D`;
+      const surveyUrl = `/api/Redirect?url=https%3A%2F%2Fheartbeat.adurolife.com%2Fapp%2Fsurvey%2F%3Fs%3D4f9e5f0d-d4bd-4306-bf42-40ccabca66e1%26q1%3D${result.Data.ChallengeId}%26q4%3D%5Bparticipantcode%5D%26q5%3D%5Be%5D`;
 
       $.ajax({
         url: 'https://api.limeade.com/api/admin/activity/' + result.Data.ChallengeId,
         type: 'PUT',
         dataType: 'json',
         data: JSON.stringify({
-          'AboutChallenge': `<p>This five-minute assessment will give you the chance to reflect on different areas of your life and how they all tie together. Please respond to the questions on a scale from 0 to 10.</p><p>The Flourishing Index was developed by <a href="https://hfh.fas.harvard.edu/" target="_blank" rel="noopener" style="text-decoration: underline">The Human Flourishing Program</a> at Harvard University. The background and motivation for these items and the flourishing domains can be found in: VanderWeele, T.J. (2017). <a href="https://www.pnas.org/content/114/31/8148" target="_blank" rel="noopener" style="text-decoration: underline">On the promotion of human flourishing</a>. Proceedings of the National Academy of Sciences, U.S.A., 31:8148-8156.</p><p>You can access your results any time after you have completed the full assessment by clicking <a href="${surveyUrl}" target="_blank" rel="noopener">here</a>. After reporting your completion, you can find this tile in your History tab.</p><p>The Flourishing Index will be available for you to complete four times each year to provide real-time reflection on your life.</p><p><a href="${surveyUrl}">CLICK HERE TO GET STARTED</a>.</p><p style="font-size: 0.7em;">&copy; Copyright 2020 <a style="text-decoration: none;" href="http://www.adurolife.com/" target="_blank" rel="noopener">ADURO, INC.</a> All rights reserved.</p>`
+          'AboutChallenge': `<p>This five-minute assessment will give you the chance to reflect on different areas of your life and how they all tie together. Please respond to the questions on a scale from 0 to 10.</p><p>The Flourishing Index was developed by <a style="text-decoration: underline;" href="https://hfh.fas.harvard.edu/" target="_blank" rel="noopener">The Human Flourishing Program</a> at Harvard University. The background and motivation for these items and the flourishing domains can be found in: VanderWeele, T.J. (2017). <a style="text-decoration: underline;" href="https://www.pnas.org/content/114/31/8148" target="_blank" rel="noopener">On the promotion of human flourishing</a>. Proceedings of the National Academy of Sciences, U.S.A., 31:8148-8156.</p><p>You can access your results any time after you have completed the full assessment by clicking <a href="${surveyUrl}" target="_blank" rel="noopener">here</a>. After reporting your completion, you can find this tile in your History tab.</p><p>The Flourishing Index will be available for you to complete four times each year to provide real-time reflection on your life.</p><p><a href="${surveyUrl}" target="_blank" rel="noopener">CLICK HERE TO GET STARTED</a>.</p><p style="font-size: 0.7em;">&copy; Copyright 2020 <a style="text-decoration: none;" href="http://www.adurolife.com/" target="_blank" rel="noopener">ADURO, INC.</a> All rights reserved.</p>`
         }),
         headers: {
           Authorization: 'Bearer ' + client.fields['LimeadeAccessToken']
@@ -129,7 +117,7 @@ function App() {
         let count = Number($('#finishedUploads').html());
         $('#finishedUploads').html(count + 1);
 
-        $('#uploadModal .modal-body').html(`
+        $('#uploadModal .modal-body').append(`
           <div class="alert alert-success" role="alert">
             <p>Uploaded Tile for <strong>${client.fields['Account Name']}</strong></p>
             <p class="mb-0"><strong>Challenge Id</strong></p>
@@ -185,7 +173,7 @@ function App() {
     <div id="app">
       <Header />
 
-      <div className="form-group">
+      <div className="form-group" style={{ display: 'none' }}>
         <label htmlFor="employerName">EmployerName</label>
         <select id="employerName" className="form-control custom-select" onChange={selectClient}>
           <option defaultValue>Select Employer</option>
@@ -194,7 +182,7 @@ function App() {
       </div>
 
       <div className="text-center">
-        <button type="button" className="btn btn-primary" id="uploadButton" onClick={uploadChallenge}>Upload Flourishing Index Tile</button>
+        <button type="button" className="btn btn-primary" id="uploadButton" onClick={massUpload}>Upload Flourishing Index Tile</button>
         <img id="spinner" src="images/spinner.svg" />
       </div>
 
