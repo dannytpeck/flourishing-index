@@ -71,7 +71,7 @@ function App() {
       'ChallengeTarget': 1,
       'ChallengeType': 'OneTimeEvent',
       'Dimensions': [],
-      'DisplayInProgram': true,
+      'DisplayInProgram': startDate === moment(Date) ? true : false,  // sets true if the challenge starts today
       'DisplayPriority': null,
       'EndDate': endDate,
       'EventCode': '',
