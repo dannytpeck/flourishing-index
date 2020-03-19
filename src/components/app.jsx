@@ -121,7 +121,7 @@ function App() {
           <div class="alert alert-success" role="alert">
             <p>Uploaded Tile for <strong>${client.fields['Account Name']}</strong></p>
             <p class="mb-0"><strong>Challenge Id</strong></p>
-            <p>${result.Data.ChallengeId}</p>
+          <p><a href="${client.fields['Domain']}/admin/program-designer/activities/activity/${result.Data.ChallengeId}" target="_blank">${result.Data.ChallengeId}</a></p>
             <p class="mb-0"><strong>Survey link</strong></p>
             <p>${surveyUrl}</p>
           </div>
