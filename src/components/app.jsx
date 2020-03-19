@@ -55,8 +55,8 @@ function App() {
     // Open the modal
     $('#uploadModal').modal();
 
-    const startDate = '2020-02-17';
-    const endDate = '2020-03-17';
+    const startDate = $('#startDate').val();
+    const endDate = $('#endDate').val();
 
     const data = {
       'AboutChallenge': '',
@@ -173,7 +173,7 @@ function App() {
     <div id="app">
       <Header />
 
-      <div className="form-group" style={{ display: 'none' }}>
+      <div className="form-group">
         <label htmlFor="employerName">EmployerName</label>
         <select id="employerName" className="form-control custom-select" onChange={selectClient}>
           <option defaultValue>Select Employer</option>
@@ -181,10 +181,26 @@ function App() {
         </select>
       </div>
 
-      <div className="text-center">
-        <button type="button" className="btn btn-primary" id="uploadButton" onClick={massUpload}>Upload Flourishing Index Tile</button>
+      <div className="row">
+        <div className="col form-group">
+          <label htmlFor="startDate">Start Date</label>
+          <input type="date" className="form-control" id="startDate" />
+        </div>
+        <div className="col form-group">
+          <label htmlFor="endDate">End Date</label>
+          <input type="date" className="form-control" id="endDate" />
+        </div>
+      </div>
+
+      <div className="form-group text-center">
+        <button type="button" className="btn btn-primary" id="uploadButton" onClick={() => uploadChallenge(selectedClient)}>Upload Flourishing Index Tile</button>
         <img id="spinner" src="images/spinner.svg" />
       </div>
+
+      {/* <div className="form-group text-center">
+        <button type="button" className="btn btn-primary" id="uploadButton" onClick={massUpload}>Mass Upload Flourishing Tiles</button>
+        <img id="spinner" src="images/spinner.svg" />
+      </div> */}
 
       <Footer />
 
