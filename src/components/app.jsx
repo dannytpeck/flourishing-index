@@ -41,20 +41,30 @@ function App() {
     // Open the modal
     $('#uploadModal').modal();
 
-    const flourishingClients = clients.filter(client => client.fields['Flourishing Index'] === 'Web');
+    let timer = 0;
+
+    // Upload to flourishing clients
+    const flourishingClients = clients.filter(client => {
+      return client.fields['Flourishing Index'] === 'Web' && client.fields['Uploaded'] !== '1';
+    });
 
     $('#counter').html(`<p><span id="finishedUploads">0</span> / ${flourishingClients.length}</p>`);
 
     flourishingClients.map(client => {
-      // console.log(client);
-      uploadChallenge(client);
+      // 3 seconds between ajax requests, because limeade is bad and returns 500 errors if we go too fast
+      timer += 3000;
+      setTimeout(() => {
+        uploadChallenge(client);
+      }, timer);
     });
+
   }
 
   function uploadChallenge(client) {
     // Open the modal
     $('#uploadModal').modal();
 
+    const surveyId = '2d91b847-392a-4fda-b35f-92a37b0ce2cc';
     const startDate = $('#startDate').val();
     const endDate = $('#endDate').val();
 
@@ -98,14 +108,14 @@ function App() {
       },
       contentType: 'application/json; charset=utf-8'
     }).done((result) => {
-      const surveyUrl = `/api/Redirect?url=https%3A%2F%2Fheartbeat.adurolife.com%2Fapp%2Fsurvey%2F%3Fs%3D4f9e5f0d-d4bd-4306-bf42-40ccabca66e1%26q1%3D${result.Data.ChallengeId}%26q4%3D%5Bparticipantcode%5D%26q5%3D%5Be%5D`;
+      const surveyUrl = `/api/Redirect?url=https%3A%2F%2Fheartbeat.adurolife.com%2Fapp%2Fsurvey%2F%3Fs%3D${surveyId}%26q1%3D${result.Data.ChallengeId}%26q4%3D%5Bparticipantcode%5D%26q5%3D%5Be%5D`;
 
       $.ajax({
         url: 'https://api.limeade.com/api/admin/activity/' + result.Data.ChallengeId,
         type: 'PUT',
         dataType: 'json',
         data: JSON.stringify({
-          'AboutChallenge': `<p>This five-minute assessment will give you the chance to reflect on different areas of your life and how they all tie together. Please respond to the questions on a scale from 0 to 10.</p><p>The Flourishing Index was developed by <a style="text-decoration: underline;" href="https://hfh.fas.harvard.edu/" target="_blank" rel="noopener">The Human Flourishing Program</a> at Harvard University. The background and motivation for these items and the flourishing domains can be found in: VanderWeele, T.J. (2017). <a style="text-decoration: underline;" href="https://www.pnas.org/content/114/31/8148" target="_blank" rel="noopener">On the promotion of human flourishing</a>. Proceedings of the National Academy of Sciences, U.S.A., 31:8148-8156.</p><p>You can access your results any time after you have completed the full assessment by clicking <a href="${surveyUrl}" target="_blank" rel="noopener">here</a>. After reporting your completion, you can find this tile in your History tab.</p><p>The Flourishing Index will be available for you to complete four times each year to provide real-time reflection on your life.</p><p><a href="${surveyUrl}" target="_blank" rel="noopener">CLICK HERE TO GET STARTED</a>.</p><p style="font-size: 0.7em;">&copy; Copyright 2020 <a style="text-decoration: none;" href="http://www.adurolife.com/" target="_blank" rel="noopener">ADURO, INC.</a> All rights reserved.</p>`
+          'AboutChallenge': `<p>This five-minute personal inquiry will give you the chance to reflect on different areas of your life and how they all tie together. Please respond to the questions on a scale from 0 to 10.</p><p>The Flourishing Index was developed by <a style="text-decoration: underline;" href="https://hfh.fas.harvard.edu/" target="_blank" rel="noopener">The Human Flourishing Program</a> at Harvard University. The background and motivation for these items and the flourishing domains can be found in: VanderWeele, T.J. (2017). <a style="text-decoration: underline;" href="https://www.pnas.org/content/114/31/8148" target="_blank" rel="noopener">On the promotion of human flourishing</a>. Proceedings of the National Academy of Sciences, U.S.A., 31:8148-8156.</p><p>You can access your results any time by clicking <a href="${surveyUrl}" target="_blank" rel="noopener">here</a>. After reporting your completion, you can find this tile in your History tab.</p><p>The Flourishing Index will be available for you to complete four times each year to provide real-time reflection on your life.</p><p><a href="${surveyUrl}" target="_blank" rel="noopener">CLICK HERE TO GET STARTED</a>.</p><p style="font-size: 0.7em;">&copy; Copyright 2020 <a style="text-decoration: none;" href="http://www.adurolife.com/" target="_blank" rel="noopener">ADURO, INC.</a> All rights reserved.</p>`
         }),
         headers: {
           Authorization: 'Bearer ' + client.fields['LimeadeAccessToken']
@@ -197,10 +207,14 @@ function App() {
         <img id="spinner" src="images/spinner.svg" />
       </div>
 
-      {/* <div className="form-group text-center">
+      <br />
+      <br />
+      <br />
+
+      <div className="form-group text-center">
         <button type="button" className="btn btn-primary" id="uploadButton" onClick={massUpload}>Mass Upload Flourishing Tiles</button>
         <img id="spinner" src="images/spinner.svg" />
-      </div> */}
+      </div>
 
       <Footer />
 
